@@ -24,8 +24,6 @@ data class DishesServiceResult(
     @SerialId(1) @Optional val dishes: List<Dish> = emptyList()
 )
 
-val iso8601Format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-
 @Serializable
 data class Dish(
     @SerialId(1) val date: Date,
@@ -69,6 +67,8 @@ enum class Badge(private val id: String) {
 
 @Serializer(forClass = Date::class)
 object DateSerializer : KSerializer<Date> {
+
+  private val iso8601Format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 
   override val serialClassDesc: KSerialClassDesc = SerialClassDescImpl("java.util.Date")
 
