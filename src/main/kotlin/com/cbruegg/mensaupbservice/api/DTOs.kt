@@ -3,17 +3,22 @@ package com.cbruegg.mensaupbservice.api
 import kotlinx.serialization.*
 import kotlinx.serialization.Optional
 import kotlinx.serialization.internal.SerialClassDescImpl
+import kotlinx.serialization.protobuf.ProtoBuf
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun initMensaSerialization() {
-  registerSerializer(Date::class.java.name, DateSerializer)
-}
+private val proto = ProtoBuf(SerialContext().apply { registerSerializer(Date::class, DateSerializer) })
 
 @Serializable
 data class RestaurantsServiceResult(
     @SerialId(1) @Optional val restaurants: List<Restaurant> = emptyList()
-)
+) {
+  fun serialize(): String = proto.dumps(this)
+
+  companion object {
+    fun deserialize(str: String): RestaurantsServiceResult = proto.loads(str)
+  }
+}
 
 @Serializable
 data class Restaurant(
@@ -26,7 +31,13 @@ data class Restaurant(
 @Serializable
 data class DishesServiceResult(
     @SerialId(1) @Optional val dishes: List<Dish> = emptyList()
-)
+) {
+  fun serialize(): String = proto.dumps(this)
+
+  companion object {
+    fun deserialize(str: String): DishesServiceResult = proto.loads(str)
+  }
+}
 
 @Serializable
 data class Dish(
