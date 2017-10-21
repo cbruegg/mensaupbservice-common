@@ -1,10 +1,10 @@
 package com.cbruegg.mensaupbservice.api
 
+import kotlinx.serialization.*
 import kotlinx.serialization.Optional
-import kotlinx.serialization.SerialId
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import kotlinx.serialization.internal.SerialClassDescImpl
 import java.text.SimpleDateFormat
+import java.util.*
 
 @Serializable
 data class RestaurantsServiceResult(
@@ -28,7 +28,7 @@ val iso8601Format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 
 @Serializable
 data class Dish(
-    @SerialId(1) private val dateStr: String,
+    @SerialId(1) val date: Date,
     @SerialId(2) val nameDE: String,
     @SerialId(3) val nameEN: String,
     @SerialId(4) val descriptionDE: String?,
@@ -48,10 +48,7 @@ data class Dish(
     @SerialId(18) val priceType: PriceType,
     @SerialId(19) val imageUrl: String?,
     @SerialId(20) val thumbnailImageUrl: String?
-) {
-  @Transient
-  val date by lazy { iso8601Format.parse(dateStr) }
-}
+)
 
 enum class PriceType {
   WEIGHTED, FIXED
@@ -68,4 +65,15 @@ enum class Badge(private val id: String) {
      */
     fun findById(id: String): Badge? = values().firstOrNull { it.id == id }
   }
+}
+
+@Serializer(forClass = Date::class)
+object DateSerializer : KSerializer<Date> {
+
+  override val serialClassDesc: KSerialClassDesc = SerialClassDescImpl("java.util.Date")
+
+  override fun load(input: KInput): Date = iso8601Format.parse(input.readStringValue())
+
+  override fun save(output: KOutput, obj: Date) = output.writeStringValue(iso8601Format.format(obj))
+
 }
