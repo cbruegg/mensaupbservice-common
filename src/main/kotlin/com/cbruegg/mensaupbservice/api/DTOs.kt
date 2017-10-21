@@ -6,6 +6,10 @@ import kotlinx.serialization.internal.SerialClassDescImpl
 import java.text.SimpleDateFormat
 import java.util.*
 
+fun initMensaSerialization() {
+  registerSerializer(Date::class.java.name, DateSerializer)
+}
+
 @Serializable
 data class RestaurantsServiceResult(
     @SerialId(1) @Optional val restaurants: List<Restaurant> = emptyList()
