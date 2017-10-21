@@ -1,10 +1,10 @@
 package com.cbruegg.mensaupbservice.api
 
-import kotlinx.serialization.*
 import kotlinx.serialization.Optional
-import kotlinx.serialization.internal.SerialClassDescImpl
+import kotlinx.serialization.SerialContext
+import kotlinx.serialization.SerialId
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoBuf
-import java.text.SimpleDateFormat
 import java.util.*
 
 private val proto = ProtoBuf(SerialContext().apply { registerSerializer(Date::class, DateSerializer) })
@@ -78,17 +78,4 @@ enum class Badge(private val id: String) {
      */
     fun findById(id: String): Badge? = values().firstOrNull { it.id == id }
   }
-}
-
-@Serializer(forClass = Date::class)
-object DateSerializer : KSerializer<Date> {
-
-  private val iso8601Format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-
-  override val serialClassDesc: KSerialClassDesc = SerialClassDescImpl("java.util.Date")
-
-  override fun load(input: KInput): Date = iso8601Format.parse(input.readStringValue())
-
-  override fun save(output: KOutput, obj: Date) = output.writeStringValue(iso8601Format.format(obj))
-
 }
