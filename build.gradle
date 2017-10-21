@@ -54,7 +54,7 @@ ext {
     siteUrl = 'https://github.com/cbruegg/mensaupbservice-common'
     gitUrl = 'https://github.com/cbruegg/mensaupbservice-common.git'
 
-    libraryVersion = '1.0.2'
+    libraryVersion = '1.0.3'
 
     developerId = 'cbruegg'
     developerName = 'Christian Brüggemann'
