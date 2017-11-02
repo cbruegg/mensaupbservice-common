@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 @Serializer(forClass = Date::class)
 object DateSerializer : KSerializer<Date> {
 
-  private val iso8601Format by threadLocal { SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX") }
+  private val iso8601Format by threadLocal { SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") }
 
   override val serialClassDesc: KSerialClassDesc = SerialClassDescImpl("java.util.Date")
 
