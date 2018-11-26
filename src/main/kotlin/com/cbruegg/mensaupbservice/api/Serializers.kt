@@ -9,24 +9,22 @@ import kotlin.reflect.KProperty
 
 @Serializer(forClass = Date::class)
 object DateSerializer : KSerializer<Date> {
+    private val iso8601Format by threadLocal { SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") }
 
-  private val iso8601Format by threadLocal { SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") }
+    override val descriptor: SerialDescriptor = SerialClassDescImpl("java.util.Date")
 
-  override val serialClassDesc: KSerialClassDesc = SerialClassDescImpl("java.util.Date")
+    override fun deserialize(input: Decoder): Date = iso8601Format.parse(input.decodeString())
 
-  override fun load(input: KInput): Date = iso8601Format.parse(input.readStringValue())
-
-  override fun save(output: KOutput, obj: Date) = output.writeStringValue(iso8601Format.format(obj))
-
+    override fun serialize(output: Encoder, obj: Date) = output.encodeString(iso8601Format.format(obj))
 }
 
 private class ThreadLocalDelegate<out T>(init: () -> T) : ReadOnlyProperty<Any, T> {
 
-  private val local = object : ThreadLocal<T>() {
-    override fun initialValue() = init()
-  }
+    private val local = object : ThreadLocal<T>() {
+        override fun initialValue() = init()
+    }
 
-  override fun getValue(thisRef: Any, property: KProperty<*>): T = local.get()
+    override fun getValue(thisRef: Any, property: KProperty<*>): T = local.get()
 
 }
 

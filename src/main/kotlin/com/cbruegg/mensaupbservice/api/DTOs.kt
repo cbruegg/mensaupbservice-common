@@ -1,26 +1,29 @@
 package com.cbruegg.mensaupbservice.api
 
+import kotlinx.serialization.*
 import kotlinx.serialization.Optional
-import kotlinx.serialization.SerialContext
-import kotlinx.serialization.SerialId
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.context.SimpleModule
 import kotlinx.serialization.protobuf.ProtoBuf
 import java.util.*
 
-private val proto = ProtoBuf(SerialContext().apply { registerSerializer(Date::class, DateSerializer) })
-
-@Serializable
-data class RestaurantsServiceResult(
-    @SerialId(1) @Optional val restaurants: List<Restaurant> = emptyList()
-) {
-  fun serialize(): String = proto.dumps(this)
-
-  companion object {
-    fun deserialize(str: String): RestaurantsServiceResult = proto.loads(str)
-  }
+private val proto = ProtoBuf().apply {
+    install(SimpleModule(Date::class, DateSerializer))
 }
 
 @Serializable
+@UseExperimental(ImplicitReflectionSerializer::class)
+data class RestaurantsServiceResult(
+    @SerialId(1) @Optional val restaurants: List<Restaurant> = emptyList()
+) {
+    fun serialize(): String = proto.dumps(this)
+
+    companion object {
+        fun deserialize(str: String): RestaurantsServiceResult = proto.loads(str)
+    }
+}
+
+@Serializable
+@UseExperimental(ImplicitReflectionSerializer::class)
 data class Restaurant(
     @SerialId(1) val id: String,
     @SerialId(2) val name: String,
@@ -29,14 +32,15 @@ data class Restaurant(
 )
 
 @Serializable
+@UseExperimental(ImplicitReflectionSerializer::class)
 data class DishesServiceResult(
     @SerialId(1) @Optional val dishes: List<Dish> = emptyList()
 ) {
-  fun serialize(): String = proto.dumps(this)
+    fun serialize(): String = proto.dumps(this)
 
-  companion object {
-    fun deserialize(str: String): DishesServiceResult = proto.loads(str)
-  }
+    companion object {
+        fun deserialize(str: String): DishesServiceResult = proto.loads(str)
+    }
 }
 
 @Serializable
@@ -64,18 +68,18 @@ data class Dish(
 )
 
 enum class PriceType {
-  WEIGHTED, FIXED
+    WEIGHTED, FIXED
 }
 
 enum class Badge(private val id: String) {
-  VEGAN("vegan"), VEGETARIAN("vegetarian"),
-  NONFAT("nonfat"), LACTOSE_FREE("lactose-free");
+    VEGAN("vegan"), VEGETARIAN("vegetarian"),
+    NONFAT("nonfat"), LACTOSE_FREE("lactose-free");
 
-  companion object {
-    /**
-     * Each Badge has an id that is used by the API. This method retrieves a Badge by its id.
-     * Return value will be null if there's no matching element.
-     */
-    fun findById(id: String): Badge? = values().firstOrNull { it.id == id }
-  }
+    companion object {
+        /**
+         * Each Badge has an id that is used by the API. This method retrieves a Badge by its id.
+         * Return value will be null if there's no matching element.
+         */
+        fun findById(id: String): Badge? = values().firstOrNull { it.id == id }
+    }
 }
