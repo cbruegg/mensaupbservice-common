@@ -13,9 +13,9 @@ object DateSerializer : KSerializer<Date> {
 
     override val descriptor: SerialDescriptor = SerialClassDescImpl("java.util.Date")
 
-    override fun deserialize(input: Decoder): Date = iso8601Format.parse(input.decodeString())
+    override fun deserialize(decoder: Decoder): Date = iso8601Format.parse(decoder.decodeString())
 
-    override fun serialize(output: Encoder, obj: Date) = output.encodeString(iso8601Format.format(obj))
+    override fun serialize(encoder: Encoder, obj: Date) = encoder.encodeString(iso8601Format.format(obj))
 }
 
 private class ThreadLocalDelegate<out T>(init: () -> T) : ReadOnlyProperty<Any, T> {
