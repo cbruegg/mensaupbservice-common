@@ -1,66 +1,70 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package com.cbruegg.mensaupbservice.api
 
-import kotlinx.serialization.SerialId
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.dumps
-import kotlinx.serialization.loads
+import kotlinx.serialization.decodeFromHexString
+import kotlinx.serialization.encodeToHexString
 import kotlinx.serialization.protobuf.ProtoBuf
+import kotlinx.serialization.protobuf.ProtoNumber
 import java.util.*
 
+@OptIn(ExperimentalSerializationApi::class)
 private val proto = ProtoBuf
 
 @Serializable
 data class RestaurantsServiceResult(
-        @SerialId(1) val restaurants: List<Restaurant> = emptyList()
+        @ProtoNumber(1) val restaurants: List<Restaurant> = emptyList()
 ) {
-    fun serialize(): String = proto.dumps(serializer(), this)
+    fun serialize(): String = proto.encodeToHexString(serializer(), this)
 
     companion object {
-        fun deserialize(str: String): RestaurantsServiceResult = proto.loads(serializer(), str)
+        fun deserialize(str: String): RestaurantsServiceResult = proto.decodeFromHexString(serializer(), str)
     }
 }
 
 @Serializable
 data class Restaurant(
-        @SerialId(1) val id: String,
-        @SerialId(2) val name: String,
-        @SerialId(3) val location: String,
-        @SerialId(4) val isActive: Boolean
+        @ProtoNumber(1) val id: String,
+        @ProtoNumber(2) val name: String,
+        @ProtoNumber(3) val location: String,
+        @ProtoNumber(4) val isActive: Boolean
 )
 
 @Serializable
 data class DishesServiceResult(
-        @SerialId(1) val dishes: List<Dish> = emptyList()
+        @ProtoNumber(1) val dishes: List<Dish> = emptyList()
 ) {
-    fun serialize(): String = proto.dumps(serializer(), this)
+    fun serialize(): String = proto.encodeToHexString(serializer(), this)
 
     companion object {
-        fun deserialize(str: String): DishesServiceResult = proto.loads(serializer(), str)
+        fun deserialize(str: String): DishesServiceResult = proto.decodeFromHexString(serializer(), str)
     }
 }
 
 @Serializable
-data class Dish(
-        @SerialId(1) @Serializable(with = DateSerializer::class) val date: Date,
-        @SerialId(2) val nameDE: String,
-        @SerialId(3) val nameEN: String,
-        @SerialId(4) val descriptionDE: String?,
-        @SerialId(5) val descriptionEN: String?,
-        @SerialId(6) val category: String,
-        @SerialId(7) val categoryDE: String,
-        @SerialId(8) val categoryEN: String,
-        @SerialId(9) val subcategoryDE: String,
-        @SerialId(10) val subcategoryEN: String,
-        @SerialId(11) val studentPrice: Double,
-        @SerialId(12) val workerPrice: Double,
-        @SerialId(13) val guestPrice: Double,
-        @SerialId(14) val allergens: List<String> = emptyList(),
-        @SerialId(15) val orderInfo: Int,
-        @SerialId(16) val badges: List<Badge> = emptyList(),
-        @SerialId(17) val restaurantId: String,
-        @SerialId(18) val priceType: PriceType,
-        @SerialId(19) val imageUrl: String?,
-        @SerialId(20) val thumbnailImageUrl: String?
+data class Dish constructor(
+        @ProtoNumber(1) @Serializable(with = DateSerializer::class) val date: Date,
+        @ProtoNumber(2) val nameDE: String,
+        @ProtoNumber(3) val nameEN: String,
+        @ProtoNumber(4) val descriptionDE: String?,
+        @ProtoNumber(5) val descriptionEN: String?,
+        @ProtoNumber(6) val category: String,
+        @ProtoNumber(7) val categoryDE: String,
+        @ProtoNumber(8) val categoryEN: String,
+        @ProtoNumber(9) val subcategoryDE: String,
+        @ProtoNumber(10) val subcategoryEN: String,
+        @ProtoNumber(11) val studentPrice: Double,
+        @ProtoNumber(12) val workerPrice: Double,
+        @ProtoNumber(13) val guestPrice: Double,
+        @ProtoNumber(14) val allergens: List<String> = emptyList(),
+        @ProtoNumber(15) val orderInfo: Int,
+        @ProtoNumber(16) val badges: List<Badge> = emptyList(),
+        @ProtoNumber(17) val restaurantId: String,
+        @ProtoNumber(18) val priceType: PriceType,
+        @ProtoNumber(19) val imageUrl: String?,
+        @ProtoNumber(20) val thumbnailImageUrl: String?
 )
 
 enum class PriceType {
